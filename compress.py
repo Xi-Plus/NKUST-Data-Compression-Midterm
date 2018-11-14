@@ -7,9 +7,10 @@ from huffman import *
 import time
 
 algolist = {
-	"lz78": [LZ78_encode, LZ78_decode],
-	"xp01": [XIPLUS01_encode, XIPLUS01_decode],
-	"huffman": [huffman_encode, huffman_decode],
+	"lz78": [LZ78_encode, LZ78_decode, []],
+	"xp01": [XIPLUS01_encode, XIPLUS01_decode, [True]],
+	"xp01b": [XIPLUS01_encode, XIPLUS01_decode, [False]],
+	"huffman": [huffman_encode, huffman_decode, []],
 }
 
 ctype = sys.argv[1]
@@ -27,7 +28,7 @@ if ctype == "encode":
 	oldsize = os.path.getsize(finname)
 	print("old size: {}".format(oldsize))
 	start = time.time()
-	algolist[algo][0](finname, foutname)
+	algolist[algo][0](finname, foutname, *algolist[algo][2])
 	print("spend {} s".format(time.time()-start))
 	# result = algolist[algo][0](data)
 	# print("new size: {}".format(len(result)))
@@ -45,7 +46,7 @@ elif ctype == "decode":
 	# 	data = fin.read()
 	# print("old size: {}".format(len(data)))
 	start = time.time()
-	algolist[algo][1](finname, foutname)
+	algolist[algo][1](finname, foutname, *algolist[algo][2])
 	print("spend {} s".format(time.time()-start))
 	# result = algolist[algo][1](data)
 	# print("new size: {}".format(len(result)))
