@@ -1,4 +1,5 @@
 def LZ78_encode(infile, outfile):
+	print("----- LZ78_encode -----")
 	with open(infile, "rb") as fin:
 		data = fin.read()
 
@@ -39,8 +40,11 @@ def LZ78_encode(infile, outfile):
 		# result += bytes([0])
 		fout.write(bytes([node["index"]]))
 		fout.write(bytes([0]))
+	print("----- LZ78_encode -----")
+	return True
 
 def LZ78_decode(infile, outfile):
+	print("----- LZ78_decode -----")
 	with open(infile, "rb") as fin:
 		data = fin.read()
 
@@ -63,3 +67,5 @@ def LZ78_decode(infile, outfile):
 				# input()
 		# print(tree)
 	# return result
+	print("----- LZ78_decode -----")
+	return True
