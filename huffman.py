@@ -30,18 +30,21 @@ def huffman_encode(infile, outfile):
 		# if there are no char, add a placeholder
 		print("\tthere are {} chars".format(len(dic)))
 		if len(dic) == 0:
-			dic[0] = 1
-		# dic[0] = 1
+			dic[0] = 0
 		fout.write(bytes([len(dic)-1]))
 
 		dicpool = []
 		for c in dic:
 			dicpool.append(Node(c, dic[c]))
+
+		if len(dicpool) == 1:
+			dicpool.append(Node(None, 0))
+
 		while len(dicpool) > 1:
 			dicpool.sort(key=lambda v:v.weight)
 			a = dicpool.pop(0)
 			b = dicpool.pop(0)
-			c = Node(False, a.weight+b.weight)
+			c = Node(None, a.weight+b.weight)
 			c.left = a
 			c.right = b
 			a.parent = c
@@ -55,16 +58,16 @@ def huffman_encode(infile, outfile):
 			c = dicpool.pop(0)
 			a = c.left
 			b = c.right
-			if a is not False:
+			if a is not None:
 				a.code = c.code + a.code
-				if a.char is False:
+				if a.char is None:
 					dicpool.append(a)
 				else:
 					newdicpool.append(a)
 				
-			if b is not False:
+			if b is not None:
 				b.code = c.code + b.code
-				if b.char is False:
+				if b.char is None:
 					dicpool.append(b)
 				else:
 					newdicpool.append(b)
