@@ -8,13 +8,18 @@ import math
 '''
 
 def XIPLUS01_encode(infile, outfile, utf8):
+	print("----- XIPLUS01_encode -----")
 	print("\tutf8 =", utf8)
 
 	with open(infile, "rb") as fin:
 		data = fin.read()
 
 	if utf8:
-		data = data.decode()
+		try:
+			data = data.decode()
+		except UnicodeDecodeError as e:
+			print("\tdecode fail. skip.\n")
+			return False
 
 	with open(outfile, "wb") as fout:
 		chars = list(set(list(data)))
@@ -53,9 +58,11 @@ def XIPLUS01_encode(infile, outfile, utf8):
 			temp = temp[8:]
 		fout.write(headersize.to_bytes(4, 'big'))
 
+	print("----- XIPLUS01_encode -----")
 	return True
 
 def XIPLUS01_decode(infile, outfile, utf8):
+	print("----- XIPLUS01_decode -----")
 	print("\tutf8 =", utf8)
 
 	with open(infile, "rb") as fin:
@@ -74,17 +81,14 @@ def XIPLUS01_decode(infile, outfile, utf8):
 		print("\tcbit=", cbit)
 
 		temp = ""
-		offset = headersize
-		datalen = len(data)
-		while offset < datalen - 4:
+		for offset in range(headersize, len(data)-4):
 			temp += bin(data[offset])[2:].zfill(8)
-			while len(temp) > cbit:
+			while len(temp) >= cbit:
 				if utf8:
 					fout.write(chars[int(temp[0:cbit], 2)].encode())
 				else:
 					fout.write(bytes([chars[int(temp[0:cbit], 2)]]))
 				temp = temp[cbit:]
 
-			offset += 1
-
+	print("----- XIPLUS01_decode -----")
 	return True
