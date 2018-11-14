@@ -4,10 +4,12 @@ import math
 from LZ78 import *
 from XIPLUS01 import *
 from huffman import *
+from nocompress import *
 import time
 
 algolist = {
 	"auto": [],
+	"nocompress": [nocompress_encode, nocompress_decode, []],
 	"lz78": [LZ78_encode, LZ78_decode, []],
 	"xp01": [XIPLUS01_encode, XIPLUS01_decode, [True]],
 	"xp01b": [XIPLUS01_encode, XIPLUS01_decode, [False]],
