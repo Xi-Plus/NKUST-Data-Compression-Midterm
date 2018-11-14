@@ -13,6 +13,7 @@ import math
 '''
 
 def huffman_encode(infile, outfile):
+	print("----- huffman_encode -----")
 	with open(infile, "rb") as fin:
 		string = fin.read()
 
@@ -27,7 +28,7 @@ def huffman_encode(infile, outfile):
 				dic[c] += 1
 
 		# if there are no char, add a placeholder
-		print("there are {} chars".format(len(dic)))
+		print("\tthere are {} chars".format(len(dic)))
 		if len(dic) == 0:
 			dic[0] = 1
 		# dic[0] = 1
@@ -72,11 +73,11 @@ def huffman_encode(infile, outfile):
 		maxcodelen = 0
 		for node in newdicpool:
 			maxcodelen = max(maxcodelen, len(node.code))
-			# print("{}\t{:8}\t{}".format(repr(bytes([node.char])), node.code, node.weight))
+			# print("\t{}\t{:8}\t{}".format(repr(bytes([node.char])), node.code, node.weight))
 
-		print("maxcodelen =", maxcodelen)
-		lofcl = math.ceil(math.log2(maxcodelen))
-		print("lofcl =", lofcl)
+		print("\tmaxcodelen =", maxcodelen)
+		lofcl = math.ceil(math.log2(maxcodelen+1))
+		print("\tlofcl =", lofcl)
 		fout.write(bytes([lofcl]))
 
 		temp = ""
@@ -91,17 +92,7 @@ def huffman_encode(infile, outfile):
 				fout.write(bytes([int(temp[0:8], 2)]))
 				temp = temp[8:]
 
-		print("headersize(bits, bytes) =", headersize, headersize/8)
-
-		# print()
-		# newdicpool.sort(key=lambda v:v.code)
-		# for node in newdicpool:
-		# 	print("{}\t{:8}\t{}".format(repr(node.char), node.code, node.weight))
-
-		# print()
-		# newdicpool.sort(key=lambda v:v.weight)
-		# for node in newdicpool:
-		# 	print("{}\t{:8}\t{}".format(repr(node.char), node.code, node.weight))
+		print("\theadersize(bits, bytes) =", headersize, headersize/8)
 
 		# result = b''
 
@@ -119,7 +110,7 @@ def huffman_encode(infile, outfile):
 				temp = temp[8:]
 
 		paddingzerolen = (8-len(temp)%8)%8
-		print("paddingzerolen =", paddingzerolen)
+		print("\tpaddingzerolen =", paddingzerolen)
 		for i in range(paddingzerolen):
 			temp += "0"
 
@@ -129,18 +120,20 @@ def huffman_encode(infile, outfile):
 
 		fout.write(bytes([paddingzerolen]))
 
+	print("----- huffman_encode -----")
 	return True
 
 def huffman_decode(infile, outfile):
+	print("----- huffman_decode -----")
 	with open(infile, "rb") as fin:
 		data = fin.read()
 
 	numberofchars = data[0] + 1
-	print("numberofchars =", numberofchars)
+	print("\tnumberofchars =", numberofchars)
 	lofcl = data[1]
-	print("lofcl =", lofcl)
+	print("\tlofcl =", lofcl)
 	paddingzerolen = data[-1]
-	print("paddingzerolen =", paddingzerolen)
+	print("\tpaddingzerolen =", paddingzerolen)
 
 	temp = ""
 	for b in data[2:-1]:
@@ -157,18 +150,20 @@ def huffman_decode(infile, outfile):
 		code = temp[offset:offset+codelen]
 		offset += codelen
 
-		# print("{}\t{:8}".format(repr(bytes([char])), code))
+		# print("\t{}\t{:8}".format(repr(bytes([char])), code))
 		dic[code] = char
 
 	with open(outfile, "wb") as fout:
 		nowcode = ""
-		for i in range(offset, len(temp)):
+		for i in range(offset, len(temp)-paddingzerolen):
 			nowcode += temp[i]
 			if nowcode in dic:
 				fout.write(bytes([dic[nowcode]]))
 				nowcode = ""
 
 	# with open(outfile, "wb") as fout:
+	print("----- huffman_decode -----")
+	return True
 
 class Node():
 	def __init__(self, char, weight):
