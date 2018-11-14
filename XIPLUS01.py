@@ -40,7 +40,10 @@ def XIPLUS01_encode(infile, outfile, utf8):
 		for t in range(len(chars)):
 			dic[chars[t]] = t
 
-		cbit = math.ceil(math.log2(len(chars)))
+		if len(chars) == 0:
+			cbit = 0
+		else:
+			cbit = math.ceil(math.log2(len(chars)))
 		print("\tcbit =", cbit)
 
 		temp = ""
