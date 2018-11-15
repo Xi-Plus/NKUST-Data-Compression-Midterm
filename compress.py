@@ -39,12 +39,13 @@ if ctype == "encode":
 		minalgo = ""
 		for algo2 in list(algolist.keys())[1:]:
 			fouttmp = "tmp_{}.bin".format(algo2)
+			start2 = time.time()
 			result = algolist[algo2][0](finname, fouttmp, *algolist[algo2][2])
 			if result == False:
 				print("{} skip".format(algo2))
 				continue
 			newsize = os.path.getsize(fouttmp)
-			print("{} {}".format(algo2, newsize))
+			print("{} {} bytes ({}) {} s".format(algo2, newsize, oldsize/newsize, time.time()-start2))
 			if newsize < minsize:
 				minalgo = algo2
 				minsize = newsize
@@ -86,7 +87,9 @@ elif ctype == "decode":
 			fin.write(data[:-1])
 		algo2 = list(algolist.keys())[data[-1]]
 		print("real decode by {}".format(algo2))
+		start2 = time.time()
 		algolist[algo2][1](fintmp, foutname, *algolist[algo2][2])
+		print("{} {} s".format(algo2, time.time()-start2))
 		os.remove(fintmp)
 	else:
 		algolist[algo][1](finname, foutname, *algolist[algo][2])
