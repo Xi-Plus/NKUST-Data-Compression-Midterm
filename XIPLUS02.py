@@ -154,36 +154,49 @@ def XIPLUS02_decode(infile, outfile, utf8):
 	if utf8:
 		chars = list(chars.decode())
 
-	temp = ""
-	for b in data[lenofchars+1:-5]:
-		temp += bin(b)[2:].zfill(8)
-		# print(len(temp))
-
 	numberofchars = len(chars)
 	print("\tnumberofchars =", numberofchars)
 
-	offset = 0
+	temp = ""
+	offset = lenofchars+1
 	dic = {}
 	for x in range(numberofchars):
 		char = chars[x]
-		codelen = int(temp[offset:offset+lofcl], 2)
-		offset += lofcl
-		code = temp[offset:offset+codelen]
-		offset += codelen
+		while len(temp) < lofcl:
+			temp += bin(data[offset])[2:].zfill(8)
+			offset += 1
+		codelen = int(temp[0:0+lofcl], 2)
+		temp = temp[lofcl:]
+
+		while len(temp) < codelen:
+			temp += bin(data[offset])[2:].zfill(8)
+			offset += 1
+		code = temp[0:0+codelen]
+		temp = temp[codelen:]
 
 		# print("\t{}\t{:8}".format(repr([char]), code))
 		dic[code] = char
 
+	allcodelen = (len(data) - offset  - 5) * 8 + len(temp) - paddingzerolen
+
 	with open(outfile, "wb") as fout:
 		nowcode = ""
-		for i in range(offset, len(temp)-paddingzerolen):
-			nowcode += temp[i]
-			if nowcode in dic:
+		i = 0
+		nowcodelen = 0
+		while nowcodelen < allcodelen:
+			i += 1
+			nowcodelen += 1
+			while len(temp) < i:
+				temp += bin(data[offset])[2:].zfill(8)
+				offset += 1
+					
+			if temp[0:i] in dic:
 				if utf8:
-					fout.write(dic[nowcode].encode())
+					fout.write(dic[temp[0:i]].encode())
 				else:
-					fout.write(bytes([dic[nowcode]]))
-				nowcode = ""
+					fout.write(bytes([dic[temp[0:i]]]))
+				temp = temp[i:]
+				i = 0
 
 	print("----- XIPLUS02_decode -----")
 	return True
