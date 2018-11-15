@@ -2,9 +2,9 @@ import math
 
 
 ''' file foramt
-	char list
+	k bytes: char list
 	content
-	4 bytes: header size
+	4 bytes: header size (=k)
 '''
 
 def XIPLUS01_encode(infile, outfile, utf8):
