@@ -1,0 +1,11 @@
+__pycache__/
+*.7z
+*.bat
+*.bin
+*.exe
+*.gz
+*.js
+*.png
+*.rar
+*.txt
+*.zip
